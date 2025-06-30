@@ -1,6 +1,7 @@
 <script lang="ts">
     import LoadingScreen from '$lib/components/LoadingScreen.svelte';
     import Hero from '$lib/components/Hero.svelte';
+    import Navbar from '$lib/components/Navbar.svelte';
 
     let showContent = false;
 
@@ -9,5 +10,6 @@
     }
 </script>
 
+<Navbar />
 <Hero visible={showContent} />
-<LoadingScreen onComplete={handleLoadingComplete} />
+<!-- <LoadingScreen onComplete={handleLoadingComplete} /> -->

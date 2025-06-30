@@ -5,12 +5,12 @@
     let menuButton: HTMLElement;
     let menuOverlay: HTMLElement;
     let menuItems: HTMLElement;
-    let isMenuOpen = false;
+    let isMenuOpen = $state(false);
 
     $effect(() => {
-        // Set initial states
-        gsap.set(menuOverlay, { opacity: 0, scale: 0.95 });
-        gsap.set(menuItems, { opacity: 0, y: 30 });
+        // Set initial states with better starting positions
+        gsap.set(menuOverlay, { opacity: 0, scale: 0.98 });
+        gsap.set(menuItems, { opacity: 0, y: 20 });
     });
 
     function toggleMenu() {
@@ -24,54 +24,61 @@
     }
 
     function openMenu() {
-        // Show overlay
-        gsap.to(menuOverlay, {
+        // Create a timeline for coordinated animations
+        const tl = gsap.timeline();
+        
+        // Show overlay with smooth scale and fade
+        tl.set(menuOverlay, { visibility: "visible" })
+          .to(menuOverlay, {
             opacity: 1,
             scale: 1,
-            duration: 0.4,
-            ease: "power3.out"
-        });
-
-        // Animate menu items
-        gsap.to(menuItems, {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power3.out",
-            delay: 0.1
-        });
-
-        // Animate menu button
-        gsap.to(menuButton, {
-            rotation: 45,
-            duration: 0.3,
+            duration: 0.5,
             ease: "power2.out"
         });
+
+        // Animate menu items with staggered entrance
+        tl.to(menuItems, {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power3.out"
+        }, "-=0.2");
+
+        // Animate menu button with smooth rotation
+        tl.to(menuButton, {
+            rotation: 45,
+            duration: 0.4,
+            ease: "power2.out"
+        }, "-=0.5");
     }
 
     function closeMenu() {
-        // Hide overlay
-        gsap.to(menuOverlay, {
-            opacity: 0,
-            scale: 0.95,
-            duration: 0.3,
-            ease: "power3.in"
-        });
-
-        // Animate menu items
-        gsap.to(menuItems, {
-            opacity: 0,
-            y: 30,
-            duration: 0.4,
-            ease: "power3.in"
-        });
-
-        // Animate menu button
-        gsap.to(menuButton, {
+        // Create a timeline for coordinated animations
+        const tl = gsap.timeline();
+        
+        // Animate menu button first
+        tl.to(menuButton, {
             rotation: 0,
             duration: 0.3,
             ease: "power2.out"
         });
+
+        // Hide menu items
+        tl.to(menuItems, {
+            opacity: 0,
+            y: 20,
+            duration: 0.4,
+            ease: "power3.in"
+        }, "-=0.1");
+
+        // Hide overlay with smooth scale and fade
+        tl.to(menuOverlay, {
+            opacity: 0,
+            scale: 0.98,
+            duration: 0.4,
+            ease: "power2.in"
+        }, "-=0.2")
+        .set(menuOverlay, { visibility: "hidden" });
     }
 
     function handleNavClick() {
@@ -85,7 +92,7 @@
 <nav class="navbar" bind:this={navbar}>
     <div class="nav-content">
         <div class="nav-brand">
-            <a href="../routes" class="brand-link">Joel J.</a>
+            <a href="/" class="brand-link">Joel J.</a>
         </div>
         
         <button class="menu-button" bind:this={menuButton} onclick={toggleMenu} aria-label="Toggle menu">
@@ -95,22 +102,22 @@
         </button>
     </div>
 
-    <div class="menu-overlay" bind:this={menuOverlay} onclick={handleNavClick} onkeydown={(e) => e.key === 'Escape' && handleNavClick()} role="dialog" aria-label="Navigation menu" tabindex="-1">
+    <div class="menu-overlay" class:open={isMenuOpen} bind:this={menuOverlay} onclick={handleNavClick} onkeydown={(e) => e.key === 'Escape' && handleNavClick()} role="dialog" aria-label="Navigation menu" tabindex="-1">
         <div class="menu-content" bind:this={menuItems} onclick={(e) => {e.stopPropagation()}} onkeydown={(e) => e.stopPropagation()} role="menu" tabindex="-1">
             <div class="menu-items">
-                <a href="../routes" class="menu-item" onclick={handleNavClick}>
+                <a href="/" class="menu-item" onclick={handleNavClick}>
                     <span class="menu-number">01</span>
                     <span class="menu-text">Home</span>
                 </a>
-                <a href="../routes" class="menu-item" onclick={handleNavClick}>
+                <a href="/projects" class="menu-item" onclick={handleNavClick}>
                     <span class="menu-number">02</span>
                     <span class="menu-text">Projects</span>
                 </a>
-                <a href="../routes" class="menu-item" onclick={handleNavClick}>
+                <a href="/about" class="menu-item" onclick={handleNavClick}>
                     <span class="menu-number">03</span>
                     <span class="menu-text">About</span>
                 </a>
-                <a href="../routes" class="menu-item" onclick={handleNavClick}>
+                <a href="/contact" class="menu-item" onclick={handleNavClick}>
                     <span class="menu-number">04</span>
                     <span class="menu-text">Contact</span>
                 </a>
@@ -192,10 +199,12 @@
         align-items: center;
         opacity: 0;
         pointer-events: none;
+        visibility: hidden;
     }
 
-    .menu-overlay:not(.hidden) {
+    .menu-overlay.open {
         pointer-events: auto;
+        visibility: visible;
     }
 
     .menu-content {

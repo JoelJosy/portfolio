@@ -10,4 +10,4 @@
 </script>
 
 <Hero visible={showContent} />
-<!-- <LoadingScreen onComplete={handleLoadingComplete} /> -->
+<LoadingScreen onComplete={handleLoadingComplete} />

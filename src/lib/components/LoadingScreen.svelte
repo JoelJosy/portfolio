@@ -1,157 +1,82 @@
 <script lang="ts">
-	import gsap from "gsap";
-
-    let counter1: HTMLDivElement;
-    let counter2: HTMLDivElement;
-    let counter3: HTMLDivElement;
+    import { onMount } from 'svelte';
+    import { gsap } from 'gsap';
 
     interface Props {
+        visible?: boolean;
         onComplete?: () => void;
     }
 
-    let { onComplete = () => {} }: Props = $props();
+    let { visible = true, onComplete }: Props = $props();
+    let loadingContainer: HTMLElement;
+    let loadingBar: HTMLElement;
+    let loadingText: HTMLElement;
 
     $effect(() => {
-        if (counter3) {
-            for (let i = 0; i < 2; i++) {
-                for (let j = 0; j < 10; j++) {
-                    const div = document.createElement('div');
-                    div.className = "num";
-                    div.textContent = j.toString();
-                    counter3.appendChild(div);
-                }
-            }
-
-            const finalDiv = document.createElement('div');
-            finalDiv.className = "num";
-            finalDiv.textContent = "0";
-            counter3.appendChild(finalDiv);
+        if (visible) {
+            startLoadingAnimation();
         }
+    });
 
-        function animate(counter: Element, duration: number, delay: number = 0) {
-            const numHeight = counter.querySelector('.num')?.clientHeight || 0;
-            const totalDistance = (counter.querySelectorAll('.num').length - 1) * numHeight;
+    function startLoadingAnimation() {
+        // Reset elements
+        gsap.set(loadingBar, { width: "0%" });
+        gsap.set([loadingText], { opacity: 0, y: 20 });
+        
+        // Create timeline
+        const tl = gsap.timeline({ delay: 0.3 });
 
-            gsap.to(counter, {
-                y: -totalDistance,
-                duration: duration,
-                delay: delay,
-                ease: "power2.inOut",
-            });
-        }
-
-        // Start animations
-        if (counter3) animate(counter3, 4);
-        if (counter2) animate(counter2, 4.5);
-        if (counter1) animate(counter1, 1.5, 3);
-
-        gsap.to(".digit", {
-            top: "-150px",
-            stagger: {
-                amount: 0.2,
-            },
-            delay: 4.5,
+        // Animate loading text
+        tl.to(loadingText, {
+            opacity: 1,
+            y: 0,
             duration: 0.8,
-            ease: "power4.inOut",
+            ease: "power3.out"
         });
 
-        gsap.from(".loader-1", {
-            width: 0,
-            duration: 4.5,
-            ease: "power2.inOut",
+        // Animate loading bar fill
+        tl.to(loadingBar, {
+            width: "100%",
+            duration: 2.5,
+            ease: "power2.inOut"
+        }, "-=0.4");
+
+        // Expand bar to full screen width
+        tl.to(loadingBar, {
+            width: "100vw",
+            duration: 0.6,
+            ease: "power3.inOut"
         });
 
-        gsap.from(".loader-2", {
-            width: 0,
-            delay: 1.5,
-            duration: 1.5,
-            ease: "power2.inOut",
+        // Expand bar to full screen height
+        tl.to(loadingBar, {
+            height: "100vh",
+            duration: 0.8,
+            ease: "power3.inOut"
         });
 
-        gsap.to(".loader", {
-            background: "none",
-            delay: 4.5,
-            duration: 0.1,
-            ease: "power2.inOut",
-        });
-
-        gsap.to(".loader-1", {
-            x: 75,
-            y: 75,
-            delay: 4.5,
-            duration: 0.5,
-        });
-
-        gsap.to(".loader-2", {
-            rotate: 90,
-            // x: 75,
-            y: -50,
-            delay: 4.5,
-            duration: 0.5,
-        });
-
-        gsap.to(".loader", {
-            scale: 40,
-            duration: 1,
-            delay: 5.5,
-            ease: "power2.inOut",
-        });
-
-        gsap.to(".loader", {
-            rotate: -40,
-            x: -1800,
-            y: 1000,
-            duration: 1,
-            delay: 5.5,
-            ease: "power2.inOut",
-        });
-
-        gsap.to(".loading-screen", {
+        // Fade out loading screen and reveal content
+        tl.to(loadingContainer, {
             opacity: 0,
             duration: 0.5,
-            delay: 6,
-            ease: "power1.inOut",
-            onComplete: onComplete
+            ease: "power3.inOut",
+            onComplete: () => {
+                // Disable pointer events to allow interaction with content below
+                loadingContainer.style.pointerEvents = 'none';
+                if (onComplete) onComplete();
+            }
         });
-    });
+    }
 </script>
 
-<div class="loading-screen">
-    <div class="loader">
-        <div class="loader-1 bar"></div>
-        <div class="loader-2 bar"></div>
-    </div>
-    <div class="counter">
-        <div bind:this={counter1} class="counter-1 digit">
-            <div class="num">0</div>
-            <div class="num">1</div>
-        </div>
-        <div bind:this={counter2} class="counter-2 digit">
-            <div class="num">0</div>
-            <div class="num">1</div>
-            <div class="num">2</div>
-            <div class="num">3</div>
-            <div class="num">4</div>
-            <div class="num">5</div>
-            <div class="num">6</div>
-            <div class="num">7</div>
-            <div class="num">8</div>
-            <div class="num">9</div>
-            <div class="num">0</div>
-        </div>
-        <div bind:this={counter3} class="counter-3 digit">
-            <div class="num">0</div>
-            <div class="num">1</div>
-            <div class="num">2</div>
-            <div class="num">3</div>
-            <div class="num">4</div>
-            <div class="num">5</div>
-            <div class="num">6</div>
-            <div class="num">7</div>
-            <div class="num">8</div>
-            <div class="num">9</div>
+<div class="loading-screen" class:visible bind:this={loadingContainer}>
+    <div class="loading-content">
+        <div class="loading-text" bind:this={loadingText}>
+            Loading
         </div>
     </div>
+    
+    <div class="loading-bar" bind:this={loadingBar}></div>
 </div>
 
 <style>
@@ -159,56 +84,60 @@
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #000;
-        color: #fff;
+        width: 100vw;
+        height: 100vh;
+        background: #000000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    }
+
+    .loading-screen:not(.visible) {
+        opacity: 0;
         pointer-events: none;
-        font-family: 'inter', sans-serif;
-    }
-    .counter {
-        position: fixed;
-        left: 50px;
-        bottom: 50px;
-        display: flex;
-        height: 102px;
-        font-size: 100px;
-        line-height: 102px;
-        clip-path: polygon(0 0, 100% 0, 100% 102px, 0 102px);
-        font-weight: 400;
-        overflow: hidden;
     }
 
-    .counter-1,
-    .counter-2,
-    .counter-3 {
+    .loading-content {
         position: relative;
-        top: 0px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
     }
-    
-    .loader {
+
+    .loading-text {
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 300;
+        color: #ffffff;
+        letter-spacing: 0.1em;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        text-transform: uppercase;
+    }
+
+    .loading-bar {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 300px;
-        height: 50px;
-        transform: translate(-50%, -50%);
-        display: flex;
-        background: rgb(80, 80, 80);
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 4px;
+        background: #ffffff;
+        z-index: 1;
     }
 
-    .loader-1 {
-        position: relative;
-        background: #fff;
-        width: 100px;
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .loading-content {
+            gap: 1.5rem;
+        }
     }
 
-    .loader-2 {
-        position: relative;
-        background: #fff;
-        width: 200px;
-    }
-    .bar {
-        height: 50px;
+    @media (max-width: 480px) {
+        .loading-content {
+            gap: 1.25rem;
+        }
     }
 </style>

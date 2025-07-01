@@ -5,14 +5,12 @@
     let menuButton: HTMLElement;
     let menuOverlay: HTMLElement;
     let menuItems: HTMLElement;
-    let menuWipe: HTMLElement;
     let isMenuOpen = $state(false);
     let navBrand: HTMLElement;
 
     $effect(() => {
-        // Set initial states with better starting positions
-        gsap.set(menuOverlay, { opacity: 1, background: 'transparent', backdropFilter: 'blur(0px)' });
-        gsap.set(menuWipe, { height: 0, background: '#111' });
+        // Set initial states
+        gsap.set(menuOverlay, { opacity: 0, background: 'rgba(0,0,0,0.0)', pointerEvents: 'none', visibility: 'hidden' });
         gsap.set(menuItems, { opacity: 0, y: 20 });
         gsap.set(menuButton, { color: '#1a1a1a' });
         gsap.set(navBrand, { color: '#1a1a1a' });
@@ -29,78 +27,97 @@
     }
 
     function openMenu() {
-        // Create a timeline for coordinated animations
+        const menuItemLinks = menuItems.querySelectorAll('.menu-item');
+        const menuLines = menuButton.querySelectorAll('.menu-line');
         const tl = gsap.timeline();
-        
-        // Show overlay (no blur)
-        tl.set(menuOverlay, { visibility: "visible" })
+        tl.set(menuOverlay, { visibility: "visible", pointerEvents: 'auto' })
           .to(menuOverlay, {
-            // Remove backdropFilter blur
-            // Only keep background transition if needed
-            // background: 'rgba(0,0,0,0.2)', // optional, or keep as is
+            opacity: 1,
+            background: 'rgba(0,0,0,0.95)',
             duration: 0.5,
-            ease: 'power2.inOut'
+            ease: 'power2.inOut',
+            onStart: () => {
+              gsap.to([menuButton, navBrand], {
+                color: '#fff',
+                duration: 0.3,
+                ease: 'power2.inOut'
+              });
+            }
           })
-          .to(menuWipe, {
-            height: '100%',
-            duration: 0.8,
-            ease: "power3.inOut"
-          }, "-=0.2")
-          .to([menuButton, navBrand], {
-            color: '#fff',
-            duration: 0.3,
-            ease: 'power2.inOut'
-          }, "-=0.6")
+          .to(menuLines, {
+            scaleX: 1.2,
+            rotation: 20,
+            duration: 0.18,
+            ease: 'power1.out',
+          }, "-=0.4")
+          .to(menuLines, {
+            scaleX: 1,
+            rotation: 20,
+            duration: 0.18,
+            ease: 'power1.in',
+          })
           .to(menuItems, {
             opacity: 1,
             y: 0,
+            duration: 0.3,
+            ease: 'power2.out'
+          }, "-=0.3")
+          .to(menuItemLinks, {
+            opacity: 1,
+            y: 0,
+            color: '#fff',
             duration: 0.5,
+            stagger: 0.08,
             ease: "power3.out"
-          }, "-=0.2") // reduced delay: start menu items reveal before wipe fully ends
-          .to(menuButton, {
-            rotation: 45,
-            duration: 0.4,
-            ease: "power2.out"
-          }, "-=0.7");
+          }, "-=0.2");
     }
 
     function closeMenu() {
-        // Create a timeline for coordinated animations
+        const menuItemLinks = menuItems.querySelectorAll('.menu-item');
+        const menuLines = menuButton.querySelectorAll('.menu-line');
         const tl = gsap.timeline();
-        
-        // Animate menu button first
-        tl.to(menuButton, {
+        tl.to(menuLines, {
+            scaleX: 0.85,
             rotation: 0,
+            duration: 0.15,
+            ease: 'power1.in',
+        })
+        .to(menuLines, {
+            scaleX: 1,
+            rotation: 0,
+            duration: 0.15,
+            ease: 'power1.out',
+        })
+        .to(menuItemLinks, {
+            opacity: 0,
+            y: 20,
+            color: '#fff',
             duration: 0.3,
-            ease: "power2.out"
-        });
-
-        // Hide menu items
-        tl.to(menuItems, {
+            stagger: {
+              each: 0.06,
+              from: "end"
+            },
+            ease: "power3.in"
+        }, "-=0.2")
+        .to(menuItems, {
             opacity: 0,
             y: 20,
             duration: 0.3,
-            ease: "power3.in"
-        }, "-=0.1");
-
-        // Hide overlay with smooth scale and fade
-        tl.to(menuWipe, {
-            height: 0,
-            duration: 0.6,
-            ease: "power3.inOut"
-        }, "+=0.05")
+            ease: 'power2.in'
+        }, "<")
         .to(menuOverlay, {
-            backdropFilter: 'blur(0px)',
+            opacity: 0,
+            background: 'rgba(0,0,0,0.0)',
             duration: 0.4,
-            ease: 'power2.inOut'
-        }, "-=0.4")
-        .set(menuOverlay, { visibility: "hidden" });
-
-        // Reset color of menu button and nav brand
-        tl.to([menuButton, navBrand], {
-            color: '#1a1a1a',
-            duration: 0.3,
-            ease: 'power2.inOut'
+            ease: 'power2.inOut',
+            onComplete: () => {
+                gsap.set(menuOverlay, { visibility: "hidden", pointerEvents: 'none' });
+                gsap.to([menuButton, navBrand], {
+                    color: '#1a1a1a',
+                    duration: 0.3,
+                    ease: 'power2.inOut'
+                });
+            }
         }, "-=0.2");
     }
 
@@ -126,7 +143,6 @@
     </div>
 
     <div class="menu-overlay" class:open={isMenuOpen} bind:this={menuOverlay} onclick={handleNavClick} onkeydown={(e) => e.key === 'Escape' && handleNavClick()} role="dialog" aria-label="Navigation menu" tabindex="-1">
-        <div class="menu-wipe" bind:this={menuWipe}></div>
         <div class="menu-content" bind:this={menuItems} onclick={(e) => {e.stopPropagation()}} onkeydown={(e) => e.stopPropagation()} role="menu" tabindex="-1">
             <div class="menu-items">
                 <a href="/" class="menu-item" onclick={handleNavClick}>
@@ -229,15 +245,15 @@
         width: 100vw;
         height: 100vh;
         background: transparent;
-        backdrop-filter: blur(0px);
+        backdrop-filter: none;
         display: flex;
         justify-content: center;
         align-items: center;
-        opacity: 1;
+        opacity: 0;
         pointer-events: none;
         visibility: hidden;
         overflow: hidden;
-        transition: background 0.3s;
+        /* Remove transition for background and opacity, GSAP will handle */
     }
 
     .menu-overlay.open {
@@ -245,22 +261,13 @@
         visibility: visible;
     }
 
-    .menu-wipe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 0;
-        background: #111;
-        z-index: 1;
-        transition: background 0.3s;
-    }
-
     .menu-content {
         text-align: center;
         position: relative;
         z-index: 2;
         color: #fff;
+        opacity: 1;
+        transition: opacity 0.3s, transform 0.3s;
     }
 
     .menu-items {

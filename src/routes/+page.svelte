@@ -7,7 +7,6 @@
     import AboutSection from '$lib/components/AboutSection.svelte';
     import ContactSection from '$lib/components/ContactSection.svelte';
     import Footer from '$lib/components/Footer.svelte';
-    import GalleryIntro from '$lib/components/GalleryIntro.svelte';
 
     let showContent = false;
 
@@ -21,7 +20,6 @@
 <AboutSection />
 <ProjectsIntro />
 <ProjectsSection />
-<GalleryIntro />
 <ContactSection />
 <Footer />
 

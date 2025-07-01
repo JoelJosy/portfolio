@@ -10,11 +10,12 @@
     let navBrand: HTMLElement;
 
     $effect(() => {
-        gsap.set(menuOverlay, { opacity: 1, background: 'transparent' });
-        gsap.set(menuWipe, { y: '-100%', background: '#000' });
+        // Set initial states with better starting positions
+        gsap.set(menuOverlay, { opacity: 1, background: 'transparent', backdropFilter: 'blur(0px)' });
+        gsap.set(menuWipe, { height: 0, background: '#111' });
         gsap.set(menuItems, { opacity: 0, y: 20 });
-        gsap.set(menuButton, { color: isMenuOpen ? '#fff' : '#1a1a1a' });
-        gsap.set(navBrand, { color: isMenuOpen ? '#fff' : '#1a1a1a' });
+        gsap.set(menuButton, { color: '#1a1a1a' });
+        gsap.set(navBrand, { color: '#1a1a1a' });
     });
 
     function toggleMenu() {
@@ -28,51 +29,79 @@
     }
 
     function openMenu() {
+        // Create a timeline for coordinated animations
         const tl = gsap.timeline();
+        
+        // Show overlay (no blur)
         tl.set(menuOverlay, { visibility: "visible" })
-          .to(menuWipe, {
-            y: '0%',
-            duration: 0.6,
-            ease: 'power2.inOut',
-            onStart: () => {
-              menuOverlay.classList.add('inverted');
-            }
+          .to(menuOverlay, {
+            // Remove backdropFilter blur
+            // Only keep background transition if needed
+            // background: 'rgba(0,0,0,0.2)', // optional, or keep as is
+            duration: 0.5,
+            ease: 'power2.inOut'
           })
+          .to(menuWipe, {
+            height: '100%',
+            duration: 0.8,
+            ease: "power3.inOut"
+          }, "-=0.2")
+          .to([menuButton, navBrand], {
+            color: '#fff',
+            duration: 0.3,
+            ease: 'power2.inOut'
+          }, "-=0.6")
           .to(menuItems, {
             opacity: 1,
             y: 0,
-            duration: 0.32,
-            ease: "power2.out"
-          }, "-=0.18")
+            duration: 0.5,
+            ease: "power3.out"
+          }, "-=0.2") // reduced delay: start menu items reveal before wipe fully ends
           .to(menuButton, {
             rotation: 45,
-            duration: 0.22,
+            duration: 0.4,
             ease: "power2.out"
-          }, "-=0.22");
+          }, "-=0.7");
     }
 
     function closeMenu() {
+        // Create a timeline for coordinated animations
         const tl = gsap.timeline();
+        
+        // Animate menu button first
         tl.to(menuButton, {
             rotation: 0,
-            duration: 0.18,
-            ease: "power2.inOut"
+            duration: 0.3,
+            ease: "power2.out"
         });
+
+        // Hide menu items
         tl.to(menuItems, {
             opacity: 0,
             y: 20,
-            duration: 0.22,
-            ease: "power2.in"
-        }, "-=0.12");
+            duration: 0.3,
+            ease: "power3.in"
+        }, "-=0.1");
+
+        // Hide overlay with smooth scale and fade
         tl.to(menuWipe, {
-            y: '-100%',
-            duration: 0.5,
-            ease: 'power2.inOut',
-            onComplete: () => {
-              menuOverlay.classList.remove('inverted');
-            }
-        }, "+=0.01");
-        tl.set(menuOverlay, { visibility: "hidden" });
+            height: 0,
+            duration: 0.6,
+            ease: "power3.inOut"
+        }, "+=0.05")
+        .to(menuOverlay, {
+            backdropFilter: 'blur(0px)',
+            duration: 0.4,
+            ease: 'power2.inOut'
+        }, "-=0.4")
+        .set(menuOverlay, { visibility: "hidden" });
+
+        // Reset color of menu button and nav brand
+        tl.to([menuButton, navBrand], {
+            color: '#1a1a1a',
+            duration: 0.3,
+            ease: 'power2.inOut'
+        }, "-=0.2");
     }
 
     function handleNavClick() {
@@ -85,11 +114,11 @@
 
 <nav class="navbar" bind:this={navbar}>
     <div class="nav-content">
-        <div class="nav-brand" class:inverted={isMenuOpen} bind:this={navBrand}>
+        <div class="nav-brand" bind:this={navBrand} class:inverted={isMenuOpen}>
             <a href="/" class="brand-link">J. J.</a>
         </div>
         
-        <button class="menu-button" class:inverted={isMenuOpen} bind:this={menuButton} onclick={toggleMenu} aria-label="Toggle menu">
+        <button class="menu-button" bind:this={menuButton} class:inverted={isMenuOpen} onclick={toggleMenu} aria-label="Toggle menu">
             <span class="menu-line"></span>
             <span class="menu-line"></span>
             <span class="menu-line"></span>
@@ -127,7 +156,7 @@
         top: 0;
         left: 0;
         width: 100%;
-        z-index: 1100;
+        z-index: 1000;
         padding: 1.5rem 2rem;
     }
 
@@ -137,18 +166,16 @@
         align-items: center;
         max-width: 1200px;
         margin: 0 auto;
-        position: relative;
-        z-index: 1200;
     }
 
     .nav-brand {
-        z-index: 1201;
+        z-index: 1001;
         color: #1a1a1a;
         transition: color 0.3s;
     }
 
     .nav-brand.inverted {
-        color: #fff !important;
+        color: #fff;
     }
 
     .brand-link {
@@ -167,7 +194,7 @@
 
     .menu-button {
         position: relative;
-        z-index: 1201;
+        z-index: 1001;
         background: none;
         border: none;
         cursor: pointer;
@@ -184,7 +211,7 @@
     }
 
     .menu-button.inverted {
-        color: #fff !important;
+        color: #fff;
     }
 
     .menu-line {
@@ -202,6 +229,7 @@
         width: 100vw;
         height: 100vh;
         background: transparent;
+        backdrop-filter: blur(0px);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -209,8 +237,7 @@
         pointer-events: none;
         visibility: hidden;
         overflow: hidden;
-        z-index: 1001;
-        transition: none;
+        transition: background 0.3s;
     }
 
     .menu-overlay.open {
@@ -218,20 +245,15 @@
         visibility: visible;
     }
 
-    .menu-overlay.inverted {
-        /* Used to trigger color inversion for overlay and icons */
-    }
-
     .menu-wipe {
         position: absolute;
         top: 0;
         left: 0;
         width: 100vw;
-        height: 100vh;
-        background: #000;
+        height: 0;
+        background: #111;
         z-index: 1;
-        transform: translateY(-100%);
-        transition: none;
+        transition: background 0.3s;
     }
 
     .menu-content {

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { onMount, tick } from 'svelte';
+import { tick } from 'svelte';
 import gsap from 'gsap';
 
 interface Project {
@@ -42,23 +42,23 @@ const projects: Project[] = [
   },
 ];
 
-let hoveredIndex: number | null = null;
-let cardEl: HTMLDivElement | null = null;
-let cardContentEl: HTMLDivElement | null = null;
-let prevIndex: number | null = null;
-let projectsListEl: HTMLDivElement | null = null;
+let hoveredIndex = $state<number | null>(null);
+let cardEl = $state<HTMLDivElement | null>(null);
+let cardContentEl = $state<HTMLDivElement | null>(null);
+let prevIndex = $state<number | null>(null);
+let projectsListEl = $state<HTMLDivElement | null>(null);
 
-let cardX = 0;
-let cardY = 0;
-let cardVisible = false;
+let cardX = $state(0);
+let cardY = $state(0);
+let cardVisible = $state(false);
 let quickToX: any = null;
 let quickToY: any = null;
-let latestMouseX = 0;
-let latestMouseY = 0;
-let isRevealing = false;
-let pendingRevealIdx: number | null = null;
-let isExiting = false;
-let isAnimating = false;
+let latestMouseX = $state(0);
+let latestMouseY = $state(0);
+let isRevealing = $state(false);
+let pendingRevealIdx = $state<number | null>(null);
+let isExiting = $state(false);
+let isAnimating = $state(false);
 
 function handleRowClick(idx: number) {
   window.open(projects[idx].link, '_blank');
@@ -98,7 +98,7 @@ function handleMouseLeave() {
   }
 }
 
-onMount(() => {
+$effect(() => {
   const updateMouse = (e: MouseEvent) => {
     latestMouseX = e.clientX;
     latestMouseY = e.clientY;
@@ -136,29 +136,31 @@ async function handleRowEnter(idx: number, e?: MouseEvent) {
   }
 }
 
-$: if (pendingRevealIdx !== null && cardEl) {
-  isRevealing = true;
-  isAnimating = true;
-  gsap.set(cardEl, { x: cardX, y: cardY + 20, opacity: 0 });
-  gsap.to(cardEl, {
-    y: cardY,
-    opacity: 1,
-    duration: 0.36,
-    ease: 'power2.out',
-    onUpdate: () => {
-      if (cardEl) gsap.set(cardEl, { x: cardX });
-    },
-    onComplete: () => {
-      if (cardEl) {
-        quickToX = gsap.quickTo(cardEl, 'x', { duration: 0.32, ease: 'power2.out' });
-        quickToY = gsap.quickTo(cardEl, 'y', { duration: 0.32, ease: 'power2.out' });
+$effect(() => {
+  if (pendingRevealIdx !== null && cardEl) {
+    isRevealing = true;
+    isAnimating = true;
+    gsap.set(cardEl, { x: cardX, y: cardY + 20, opacity: 0 });
+    gsap.to(cardEl, {
+      y: cardY,
+      opacity: 1,
+      duration: 0.36,
+      ease: 'power2.out',
+      onUpdate: () => {
+        if (cardEl) gsap.set(cardEl, { x: cardX });
+      },
+      onComplete: () => {
+        if (cardEl) {
+          quickToX = gsap.quickTo(cardEl, 'x', { duration: 0.32, ease: 'power2.out' });
+          quickToY = gsap.quickTo(cardEl, 'y', { duration: 0.32, ease: 'power2.out' });
+        }
+        isRevealing = false;
+        isAnimating = false;
       }
-      isRevealing = false;
-      isAnimating = false;
-    }
-  });
-  pendingRevealIdx = null;
-}
+    });
+    pendingRevealIdx = null;
+  }
+});
 </script>
 
 <section class="projects-section">

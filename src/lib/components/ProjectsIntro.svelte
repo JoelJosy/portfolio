@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { gsap } from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import SplitType from 'split-type';
@@ -17,7 +16,7 @@
     "and everything in between"
   ];
 
-  onMount(() => {
+  $effect(() => {
     const lineRefs = [line0, line1, line2];
     const splitLines = lineRefs.map((el) => new SplitType(el, { types: 'chars' }));
 

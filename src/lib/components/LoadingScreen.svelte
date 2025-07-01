@@ -60,7 +60,6 @@
             duration: 0.5,
             ease: "power3.inOut",
             onComplete: () => {
-                // Disable pointer events to allow interaction with content below
                 loadingContainer.style.pointerEvents = 'none';
                 if (onComplete) onComplete();
             }
@@ -127,7 +126,6 @@
         z-index: 1;
     }
 
-    /* Responsive adjustments */
     @media (max-width: 768px) {
         .loading-content {
             gap: 1.5rem;

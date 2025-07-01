@@ -14,7 +14,6 @@
     let socialLinks: HTMLElement;
 
     $effect(() => {
-        // Set initial states for elements
         gsap.set([nameElement, aboutElement, scrollIndicator, socialLinks], {
             y: 60,
             opacity: 0

@@ -11,7 +11,6 @@
   let line2: HTMLElement;
   let sectionEl: HTMLElement;
 
-  // Split the provided text into three visually balanced lines
   const textData = [
     "A peek into the things I've been creating —",
     "practical, fun, personal,",
@@ -41,9 +40,9 @@
         {
           color: '#1a1a1a',
           stagger: 0.02,
-          duration: 1 // duration is controlled by scroll, but needed for GSAP
+          duration: 1 
         },
-        `${(i * 100) / lineCount}%` // Start each line at 0%, 33%, 66%
+        `${(i * 100) / lineCount}%` 
       );
     });
   });

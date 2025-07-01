@@ -99,8 +99,17 @@
     </div>
 
     <div class="scroll-indicator" bind:this={scrollIndicator}>
-        <div class="scroll-line"></div>
-        <div class="scroll-arrow">↓</div>
+        <div class="chevrons">
+            <svg class="chevron chevron1" width="24" height="8" viewBox="0 0 24 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="2,2 12,6 22,2" stroke="#b0b0b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+            <svg class="chevron chevron2" width="24" height="8" viewBox="0 0 24 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="2,2 12,6 22,2" stroke="#b0b0b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+            <svg class="chevron chevron3" width="24" height="8" viewBox="0 0 24 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="2,2 12,6 22,2" stroke="#b0b0b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+        </div>
     </div>
 </div>
 
@@ -214,31 +223,34 @@
         gap: 0.6rem;
     }
 
-    .scroll-line {
-        width: 1px;
-        height: 2.5rem;
-        background: linear-gradient(to bottom, #666666 0%, transparent 100%);
-        opacity: 0.4;
-        transition: all 0.3s ease;
-    }
 
-    .scroll-indicator:hover .scroll-line {
-        height: 3.5rem;
+    .chevrons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        margin-top: 2px;
+    }
+    .chevron {
+        display: block;
         opacity: 0.6;
-    }
-
-    .scroll-arrow {
-        font-size: 0.9rem;
-        color: #666666;
-        opacity: 0.5;
-        font-weight: 300;
-        transition: all 0.3s ease;
         transform: translateY(0);
+        animation: chevron-bounce 1.5s infinite;
     }
-
-    .scroll-indicator:hover .scroll-arrow {
-        opacity: 0.7;
-        transform: translateY(2px);
+    .chevron1 {
+        animation-delay: 0s;
+    }
+    .chevron2 {
+        animation-delay: 0.2s;
+    }
+    .chevron3 {
+        animation-delay: 0.4s;
+    }
+    @keyframes chevron-bounce {
+        0% { opacity: 0.6; transform: translateY(0); }
+        30% { opacity: 1; transform: translateY(6px); }
+        60% { opacity: 0.6; transform: translateY(0); }
+        100% { opacity: 0.6; transform: translateY(0); }
     }
 
     /* Responsive adjustments */

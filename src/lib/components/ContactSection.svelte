@@ -25,7 +25,7 @@
           start: 'top 70%',
           end: 'top 20%',
           scrub: false,
-          markers: true,
+          markers: false,
           toggleActions: 'play none none reverse'
         }
       }

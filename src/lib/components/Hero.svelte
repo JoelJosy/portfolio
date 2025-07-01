@@ -13,44 +13,42 @@
     let socialLinks: HTMLElement;
 
     $effect(() => {
-        gsap.set([nameElement, aboutElement, scrollIndicator, socialLinks], {
+        // Set initial states consistent with other sections
+        gsap.set([nameElement, aboutElement, socialLinks], {
             y: 60,
             opacity: 0
         });
 
-        // Create timeline for entrance animations
-        const tl = gsap.timeline({ delay: 0.8 });
+        gsap.set(scrollIndicator, {
+            y: 40,
+            opacity: 0
+        });
 
-        // Animate name first
+        // Create timeline for entrance animations with consistent timing
+        const tl = gsap.timeline({ delay: 0.5 });
+
+        // Animate name with consistent timing (like other titles)
         tl.to(nameElement, {
             y: 0,
             opacity: 1,
-            duration: 1.4,
+            duration: 1.2,
             ease: "power3.out"
         });
 
-        // Animate about text
-        tl.to(aboutElement, {
+        // Animate about text and social links together
+        tl.to([aboutElement, socialLinks], {
             y: 0,
             opacity: 1,
             duration: 1.2,
             ease: "power3.out"
         }, "-=0.8");
 
-        // Animate social links
-        tl.to(socialLinks, {
-            y: 0,
-            opacity: 1,
-            duration: 1.0,
-            ease: "power3.out"
-        }, "-=0.6");
-
         // Animate scroll indicator last
         tl.to(scrollIndicator, {
             y: 0,
             opacity: 1,
             duration: 0.8,
-            ease: "power3.out"
+            ease: "power2.out"
         }, "-=0.4");
 
         // Floating animation for scroll indicator
@@ -67,17 +65,16 @@
 
 <div class="hero" bind:this={heroContainer}>
     <div class="content-wrapper">
-        <div class="name-section">
+        <div class="name-role-group">
             <div class="name" bind:this={nameElement}>
                 <div class="name-line">Joel Josy</div>
             </div>
-        </div>
-        
-        <div class="about-section">
-            <p class="about" bind:this={aboutElement}>
-                I love building things and exploring new technologies.
-                Currently diving into machine learning. Based in Karnataka, India.
-            </p>
+            
+            <div class="role-section">
+                <p class="role" bind:this={aboutElement}>
+                    Full-Stack Web Developer & Designer
+                </p>
+            </div>
         </div>
 
         <div class="social-links" bind:this={socialLinks}>
@@ -132,14 +129,14 @@
         text-align: center;
         max-width: 1000px;
         width: 100%;
-        gap: 4rem;
+        gap: 3.5rem;
     }
 
-    .name-section {
+    .name-role-group {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0;
+        gap: 2rem;
     }
 
     .name {
@@ -157,19 +154,21 @@
         position: relative;
     }
 
-    .about-section {
+    .role-section {
         max-width: 600px;
         margin: 0 auto;
     }
 
-    .about {
+    .role {
         font-size: clamp(1.1rem, 1.3vw, 1.3rem);
         font-weight: 400;
-        color: #4a4a4a;
-        line-height: 1.7;
+        color: #666666;
+        line-height: 1.5;
         margin: 0;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         letter-spacing: 0.02em;
+        transition: color 0.3s;
+        opacity: 0.85;
     }
 
     .social-links {
@@ -261,15 +260,6 @@
             gap: 4rem;
         }
 
-        .name-section {
-            gap: 1.5rem;
-        }
-
-        .about {
-            font-size: 1.25rem;
-            line-height: 1.5;
-        }
-
         .social-links {
             gap: 1.25rem;
         }
@@ -292,16 +282,9 @@
             gap: 3.5rem;
         }
 
-        .name-section {
-            gap: 1.25rem;
-        }
 
         .name {
             line-height: 0.9;
-        }
-
-        .about {
-            font-size: 1.15rem;
         }
 
         .social-links {

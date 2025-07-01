@@ -17,9 +17,9 @@
 
 <Navbar />
 <Hero visible={showContent} />
+<AboutSection />
 <ProjectsIntro />
 <ProjectsSection />
-<AboutSection />
 <ContactSection />
 <Footer />
 

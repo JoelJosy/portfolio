@@ -26,7 +26,7 @@
           start: 'top 50%',
           end: 'bottom 100%',
           scrub: false,
-          markers: true,
+          markers: false,
           toggleActions: 'play none none reverse'
         }
       }

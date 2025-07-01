@@ -23,7 +23,7 @@
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionEl,
-        start: 'top 50%',
+        start: 'top 40%',
         end: 'bottom 100%',
         scrub: true,
         markers: false,

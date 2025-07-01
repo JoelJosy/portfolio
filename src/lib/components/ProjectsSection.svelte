@@ -55,6 +55,9 @@ let quickToX: any = null;
 let quickToY: any = null;
 let latestMouseX = 0;
 let latestMouseY = 0;
+let isRevealing = false;
+let pendingRevealIdx: number | null = null;
+let isExiting = false;
 
 function handleRowClick(idx: number) {
   window.open(projects[idx].link, '_blank');
@@ -71,10 +74,21 @@ async function handleMouseMove(e: MouseEvent) {
 }
 
 function handleMouseLeave() {
-  hoveredIndex = null;
-  cardVisible = false;
-  if (cardEl) {
-    gsap.to(cardEl, { opacity: 0, duration: 0.2, ease: 'power2.in' });
+  if (cardEl && cardVisible && !isExiting) {
+    isExiting = true;
+    gsap.to(cardEl, {
+      y: cardY + 20,
+      opacity: 0,
+      duration: 0.28,
+      ease: 'power2.in',
+      onComplete: () => {
+        isExiting = false;
+        cardVisible = false;
+        hoveredIndex = null;
+      }
+    });
+  } else {
+    return;
   }
 }
 
@@ -99,17 +113,9 @@ async function handleRowEnter(idx: number, e?: MouseEvent) {
       cardY = latestMouseY - 20;
     }
     cardVisible = true;
-    await tick();
-    if (cardEl) {
-      // Set up quickTo for x/y
-      quickToX = gsap.quickTo(cardEl, 'x', { duration: 0.32, ease: 'power2.out' });
-      quickToY = gsap.quickTo(cardEl, 'y', { duration: 0.32, ease: 'power2.out' });
-      // Immediately set position before fade in
-      gsap.set(cardEl, { x: cardX, y: cardY, opacity: 0 });
-      gsap.to(cardEl, { opacity: 1, duration: 0.3, ease: 'power2.out' });
-    }
     hoveredIndex = idx;
     prevIndex = idx;
+    pendingRevealIdx = idx;
   } else if (hoveredIndex !== idx) {
     // Animate content out, then in
     if (cardContentEl) {
@@ -124,7 +130,22 @@ async function handleRowEnter(idx: number, e?: MouseEvent) {
   }
 }
 
-$: if (cardVisible && hoveredIndex !== null && cardEl) {
+$: if (pendingRevealIdx !== null && cardEl) {
+  isRevealing = true;
+  gsap.set(cardEl, { x: cardX, y: cardY + 20, opacity: 0 });
+  gsap.to(cardEl, {
+    y: cardY,
+    opacity: 1,
+    duration: 0.36,
+    ease: 'power2.out',
+    onComplete: () => {
+      isRevealing = false;
+    }
+  });
+  pendingRevealIdx = null;
+}
+
+$: if (cardVisible && hoveredIndex !== null && cardEl && !isRevealing) {
   gsap.set(cardEl, { x: latestMouseX + 24, y: latestMouseY - 20 });
 }
 </script>
@@ -145,7 +166,6 @@ $: if (cardVisible && hoveredIndex !== null && cardEl) {
         aria-label={project.title}
         tabindex="0"
         onmouseenter={(e) => handleRowEnter(idx, e)}
-        onmouseleave={() => (hoveredIndex = null)}
         onclick={() => handleRowClick(idx)}
         onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleRowClick(idx); }}
         style="cursor: pointer;"
@@ -156,16 +176,18 @@ $: if (cardVisible && hoveredIndex !== null && cardEl) {
     {/each}
   </div>
 
-  {#if cardVisible && hoveredIndex !== null}
+  {#if (cardVisible && hoveredIndex !== null) || isExiting}
     <div
       class="project-card"
       bind:this={cardEl}
       style="pointer-events: none; opacity: 1; display: flex;"
     >
-      <div class="card-content" bind:this={cardContentEl}>
-        <div class="card-title">{projects[hoveredIndex].title}</div>
-        <div class="card-desc">{projects[hoveredIndex].description}</div>
-      </div>
+      {#if hoveredIndex !== null}
+        <div class="card-content" bind:this={cardContentEl}>
+          <div class="card-title">{projects[hoveredIndex].title}</div>
+          <div class="card-desc">{projects[hoveredIndex].description}</div>
+        </div>
+      {/if}
     </div>
   {/if}
 </section>

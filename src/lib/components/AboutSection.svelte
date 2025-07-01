@@ -32,7 +32,7 @@
       }
     );
 
-    // Animate text with character reveal
+
     const split = new SplitType(aboutText, { types: 'chars' });
     gsap.fromTo(
       split.chars,

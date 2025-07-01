@@ -22,10 +22,10 @@
         ease: "power3.out",
         scrollTrigger: {
           trigger: sectionEl,
-          start: 'top 80%',
+          start: 'top 70%',
           end: 'top 20%',
           scrub: false,
-          markers: false,
+          markers: true,
           toggleActions: 'play none none reverse'
         }
       }

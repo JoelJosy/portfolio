@@ -4,6 +4,7 @@
     import Navbar from '$lib/components/Navbar.svelte';
     import ProjectsIntro from '$lib/components/ProjectsIntro.svelte';
     import ProjectsSection from '$lib/components/ProjectsSection.svelte';
+    import AboutSection from '$lib/components/AboutSection.svelte';
 
     let showContent = false;
 
@@ -16,5 +17,6 @@
 <Hero visible={showContent} />
 <ProjectsIntro />
 <ProjectsSection />
+<AboutSection />
 
 <!-- <LoadingScreen onComplete={handleLoadingComplete} /> -->

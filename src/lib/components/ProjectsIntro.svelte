@@ -13,7 +13,7 @@
   const textData = [
     "A peek into the things I've been creating —",
     "practical, fun, personal,",
-    "and everything in between"
+    "and everything in between."
   ];
 
   $effect(() => {
@@ -35,11 +35,13 @@
     splitLines.forEach((split, i) => {
       tl.fromTo(
         split.chars,
-        { color: '#eaeaea' },
+        { color: '#eaeaea', y: 20 },
         {
           color: '#1a1a1a',
-          stagger: 0.02,
-          duration: 1 
+          y: 0,
+          stagger: 0.03,
+          duration: 1.5,
+          ease: "power2.out"
         },
         `${(i * 100) / lineCount}%` 
       );

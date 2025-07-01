@@ -46,13 +46,13 @@
           })
           .to(menuLines, {
             scaleX: 1.2,
-            rotation: 20,
+            rotation: 10,
             duration: 0.18,
             ease: 'power1.out',
           }, "-=0.4")
           .to(menuLines, {
             scaleX: 1,
-            rotation: 20,
+            rotation: 10,
             duration: 0.18,
             ease: 'power1.in',
           })

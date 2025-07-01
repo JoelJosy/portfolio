@@ -317,14 +317,6 @@
         .scroll-indicator {
             bottom: 2rem;
         }
-
-        .scroll-line {
-            height: 2.5rem;
-        }
-
-        .scroll-indicator:hover .scroll-line {
-            height: 3rem;
-        }
     }
 
 

@@ -3,6 +3,7 @@
     import Hero from '$lib/components/Hero.svelte';
     import Navbar from '$lib/components/Navbar.svelte';
     import ProjectsIntro from '$lib/components/ProjectsIntro.svelte';
+    import ProjectsSection from '$lib/components/ProjectsSection.svelte';
 
     let showContent = false;
 
@@ -14,4 +15,6 @@
 <Navbar />
 <Hero visible={showContent} />
 <ProjectsIntro />
+<ProjectsSection />
+
 <!-- <LoadingScreen onComplete={handleLoadingComplete} /> -->

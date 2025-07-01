@@ -1,6 +1,9 @@
 <script lang="ts">
 import { tick } from 'svelte';
-import gsap from 'gsap';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Project {
   title: string;
@@ -47,6 +50,7 @@ let cardEl = $state<HTMLDivElement | null>(null);
 let cardContentEl = $state<HTMLDivElement | null>(null);
 let prevIndex = $state<number | null>(null);
 let projectsListEl = $state<HTMLDivElement | null>(null);
+let projectsTitleEl: HTMLElement;
 
 let cardX = $state(0);
 let cardY = $state(0);
@@ -59,6 +63,52 @@ let isRevealing = $state(false);
 let pendingRevealIdx = $state<number | null>(null);
 let isExiting = $state(false);
 let isAnimating = $state(false);
+
+$effect(() => {
+  if (!projectsTitleEl || !projectsListEl) return;
+  
+  // Animate title on scroll
+  gsap.fromTo(
+    projectsTitleEl,
+    { y: 60, opacity: 0 },
+    {
+      y: 0,
+      opacity: 1,
+      duration: 1.2,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: projectsListEl,
+        start: 'top 80%',
+        end: 'top 20%',
+        scrub: false,
+        markers: false,
+        toggleActions: 'play none none reverse'
+      }
+    }
+  );
+
+  // Animate project rows with stagger
+  const projectRows = projectsListEl.querySelectorAll('.project-row');
+  gsap.fromTo(
+    projectRows,
+    { y: 40, opacity: 0 },
+    {
+      y: 0,
+      opacity: 1,
+      stagger: 0.15,
+      duration: 1.0,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: projectsListEl,
+        start: 'top 70%',
+        end: 'bottom 100%',
+        scrub: false,
+        markers: false,
+        toggleActions: 'play none none reverse'
+      }
+    }
+  );
+});
 
 function handleRowClick(idx: number) {
   window.open(projects[idx].link, '_blank');
@@ -164,7 +214,7 @@ $effect(() => {
 </script>
 
 <section class="projects-section">
-  <h2 class="projects-title">Projects</h2>
+  <h2 class="projects-title" bind:this={projectsTitleEl}>Projects</h2>
   <div
     class="projects-list"
     bind:this={projectsListEl}
@@ -216,12 +266,25 @@ $effect(() => {
   box-sizing: border-box;
 }
 .projects-title {
-  font-size: clamp(2.2rem, 4vw, 3.5rem);
-  font-weight: 400;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 200;
   color: #1a1a1a;
-  margin-bottom: 3.5rem;
-  letter-spacing: -0.01em;
+  margin-bottom: 4rem;
+  letter-spacing: -0.04em;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 0.9;
+  position: relative;
+}
+.projects-title::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3rem;
+  height: 1px;
+  background: #e5e5e5;
+  opacity: 0.6;
 }
 .projects-list {
   width: 100vw;
@@ -312,6 +375,10 @@ $effect(() => {
   margin: 0;
 }
 @media (max-width: 900px) {
+  .projects-title {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+    margin-bottom: 3rem;
+  }
   .projects-list, .project-row {
     max-width: 98vw;
   }
@@ -341,7 +408,8 @@ $effect(() => {
     padding: 3.5rem 0 2.5rem 0;
   }
   .projects-title {
-    margin-bottom: 2rem;
+    font-size: clamp(2rem, 12vw, 3rem);
+    margin-bottom: 2.5rem;
   }
   .project-row {
     padding: 1.2rem 2vw;

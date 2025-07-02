@@ -1,9 +1,16 @@
 <script lang="ts">
     import { gsap } from 'gsap';
     import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-    import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
+
     gsap.registerPlugin(ScrollToPlugin);
-    gsap.registerPlugin(MorphSVGPlugin);
+
+    $effect(() => {
+        (async () => {
+            const pkg = await import('gsap/MorphSVGPlugin');
+            const { MorphSVGPlugin } = pkg;
+            gsap.registerPlugin(MorphSVGPlugin);
+        })();
+    });
     
     let navbar: HTMLElement;
     let menuButton: HTMLElement;

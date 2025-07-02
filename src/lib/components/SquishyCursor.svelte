@@ -1,5 +1,4 @@
 <script lang="ts">
-import { onMount, onDestroy } from 'svelte';
 let circleElement: HTMLDivElement | null = null;
 
 // Mouse and cursor positions
@@ -47,7 +46,7 @@ function tick() {
   window.requestAnimationFrame(tick);
 }
 
-onMount(() => {
+$effect(() => {
   window.addEventListener('mousemove', handleMouseMove);
   window.requestAnimationFrame(tick);
   return () => {

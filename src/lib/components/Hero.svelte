@@ -269,7 +269,7 @@
         }
 
         .scroll-indicator {
-            bottom: 2.5rem;
+            bottom: 5rem;
         }
     }
 
@@ -296,7 +296,7 @@
         }
 
         .scroll-indicator {
-            bottom: 2rem;
+            bottom: 8rem;
         }
     }
 

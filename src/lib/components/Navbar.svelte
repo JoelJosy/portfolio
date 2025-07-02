@@ -1,7 +1,10 @@
 <script lang="ts">
     import { gsap } from 'gsap';
     import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+    import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
+    import ScrambleText from './ScrambleText.svelte';
     gsap.registerPlugin(ScrollToPlugin);
+    gsap.registerPlugin(MorphSVGPlugin);
     
     let navbar: HTMLElement;
     let menuButton: HTMLElement;
@@ -9,6 +12,15 @@
     let menuItems: HTMLElement;
     let isMenuOpen = $state(false);
     let navBrand: HTMLElement;
+    let brandSvg: SVGSVGElement;
+    let brandPath: SVGPathElement;
+    let menuIconPath: SVGPathElement;
+
+    // Path data for morphing
+    const pathStart = "M9 15H17M1 13L7 7L1 1";
+    const pathEnd = "M8 14C9.125 18 15.875 18 17 14M1 13L7 7L1 1M24 13L18 7L24 1";
+    const hamburgerPath = "M1 7H17M1 13H17M1 1H17";
+    const xPath = "M13 1L1 13M1 1L13 13";
 
     $effect(() => {
         // Set initial states
@@ -16,6 +28,12 @@
         gsap.set(menuItems, { opacity: 0, y: 20 });
         gsap.set(menuButton, { color: '#1a1a1a' });
         gsap.set(navBrand, { color: '#1a1a1a' });
+        if (!menuIconPath) return;
+        gsap.to(menuIconPath, {
+            duration: 0.4,
+            morphSVG: isMenuOpen ? xPath : hamburgerPath,
+            ease: 'power2.inOut'
+        });
     });
 
     function toggleMenu() {
@@ -137,18 +155,57 @@
             });
         }
     }
+
+    function morphTo() {
+        if (brandPath) {
+            gsap.to(brandPath, {
+                duration: 0.6,
+                morphSVG: pathEnd,
+                ease: 'power2.inOut'
+            });
+        }
+    }
+
+    function morphBack() {
+        if (brandPath) {
+            gsap.to(brandPath, {
+                duration: 0.6,
+                morphSVG: pathStart,
+                ease: 'power2.inOut'
+            });
+        }
+    }
 </script>
 
 <nav class="navbar" bind:this={navbar}>
     <div class="nav-content">
         <div class="nav-brand" bind:this={navBrand} class:inverted={isMenuOpen}>
-            <a href="/" class="brand-link">J. J.</a>
+            <a href="/" class="brand-link" style="text-decoration: none;"
+                aria-label="Go to home page"
+                onmouseenter={morphTo}
+                onmouseleave={morphBack}
+            >
+                <svg width="25" height="18" viewBox="0 0 25 18" fill="none" xmlns="http://www.w3.org/2000/svg" bind:this={brandSvg}>
+                    <path
+                        d="M9 15H17M1 13L7 7L1 1"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        bind:this={brandPath}
+                    />
+                </svg>
+            </a>
         </div>
         
         <button class="menu-button" bind:this={menuButton} class:inverted={isMenuOpen} onclick={toggleMenu} aria-label="Toggle menu">
-            <span class="menu-line"></span>
-            <span class="menu-line"></span>
-            <span class="menu-line"></span>
+            <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    bind:this={menuIconPath}
+                    d="M1 7H17M1 13H17M1 1H17"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+            </svg>
         </button>
     </div>
 
@@ -159,13 +216,13 @@
                     <span class="menu-number">01</span>
                     <span class="menu-text">Home</span>
                 </button>
-                <button type="button" class="menu-item" aria-label="Go to Projects section" onclick={() => scrollToSection('projects')}>
-                    <span class="menu-number">02</span>
-                    <span class="menu-text">Projects</span>
-                </button>
                 <button type="button" class="menu-item" aria-label="Go to About section" onclick={() => scrollToSection('about')}>
-                    <span class="menu-number">03</span>
+                    <span class="menu-number">02</span>
                     <span class="menu-text">About</span>
+                </button>
+                <button type="button" class="menu-item" aria-label="Go to Projects section" onclick={() => scrollToSection('projects')}>
+                    <span class="menu-number">03</span>
+                    <span class="menu-text">Projects</span>
                 </button>
                 <button type="button" class="menu-item" aria-label="Go to Contact section" onclick={() => scrollToSection('contact')}>
                     <span class="menu-number">04</span>
@@ -210,11 +267,27 @@
         color: inherit;
         text-decoration: none;
         letter-spacing: -0.02em;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: 'Fira Mono', Menlo, Consolas, monospace;
         transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.1em;
     }
 
-    .brand-link:hover {
+    .brand-link svg {
+        height: 28px;
+        width: 28px;
+        color: inherit;
+        transition: color 0.3s, transform 0.2s cubic-bezier(.4,1.4,.6,1), box-shadow 0.2s;
+    }
+
+    .brand-link:hover,
+    .brand-link:focus {
+        color: #666666;
+    }
+
+    .brand-link:hover svg,
+    .brand-link:focus svg {
         color: #666666;
     }
 
@@ -227,10 +300,8 @@
         width: 30px;
         height: 30px;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         align-items: center;
-        gap: 4px;
+        justify-content: center;
         padding: 0;
         color: #1a1a1a;
         transition: color 0.3s;
@@ -240,12 +311,10 @@
         color: #fff;
     }
 
-    .menu-line {
-        width: 20px;
-        height: 2px;
-        background: currentColor;
-        transition: all 0.3s ease;
-        transform-origin: center;
+    .menu-button svg {
+        width: 18px;
+        height: 18px;
+        display: block;
     }
 
     .menu-overlay {

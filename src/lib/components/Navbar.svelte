@@ -74,72 +74,79 @@
             duration: 0.18,
             ease: 'power1.in',
           })
-          .to(menuItems, {
+          .fromTo(menuItems, {
+            opacity: 0,
+            y: 30
+          }, {
             opacity: 1,
             y: 0,
-            duration: 0.3,
+            duration: 0.28,
             ease: 'power2.out'
-          }, "-=0.3")
-          .to(menuItemLinks, {
+          }, "-=0.28")
+          .fromTo(menuItemLinks, {
+            opacity: 0,
+            y: 10
+          }, {
             opacity: 1,
             y: 0,
             color: '#fff',
-            duration: 0.5,
-            stagger: 0.08,
+            duration: 0.32,
+            stagger: 0.07,
             ease: "power3.out"
-          }, "-=0.2");
+          }, "-=0.22");
     }
 
     function closeMenu() {
         const menuItemLinks = menuItems.querySelectorAll('.menu-item');
-        const tl = gsap.timeline();
-        tl.to(menuItemLinks, {
-            opacity: 0,
-            y: 20,
-            color: '#fff',
-            duration: 0.28,
-            stagger: {
-              each: 0.05,
-              from: "end"
-            },
-            ease: "power3.in"
-        }, "+=0.03")
-        .to(menuItems, {
-            opacity: 0,
-            y: 20,
-            duration: 0.18,
-            ease: 'power2.in'
-        }, "-=0.12")
-        .to(menuOverlay, {
-            opacity: 0,
-            background: 'rgba(0,0,0,0.0)',
-            duration: 0.28,
-            ease: 'power2.inOut',
-            onComplete: () => {
-                gsap.set(menuOverlay, { visibility: "hidden", pointerEvents: 'none' });
-                gsap.to([menuButton, navBrand], {
-                    color: '#1a1a1a',
-                    duration: 0.2,
-                    ease: 'power2.inOut'
-                });
-                isMenuOpen = false;
-            }
-        }, "+=0");
+        return new Promise<void>((resolve) => {
+            const tl = gsap.timeline();
+            tl.to(menuItemLinks, {
+                opacity: 0,
+                y: 20,
+                color: '#fff',
+                duration: 0.28,
+                stagger: {
+                  each: 0.05,
+                  from: "end"
+                },
+                ease: "power3.in"
+            }, "+=0.03")
+            .to(menuItems, {
+                opacity: 0,
+                y: 20,
+                duration: 0.18,
+                ease: 'power2.in'
+            }, "-=0.12")
+            .to(menuOverlay, {
+                opacity: 0,
+                background: 'rgba(0,0,0,0.0)',
+                duration: 0.28,
+                ease: 'power2.inOut',
+                onComplete: () => {
+                    gsap.set(menuOverlay, { visibility: "hidden", pointerEvents: 'none' });
+                    gsap.to([menuButton, navBrand], {
+                        color: '#1a1a1a',
+                        duration: 0.2,
+                        ease: 'power2.inOut'
+                    });
+                    isMenuOpen = false;
+                    resolve();
+                }
+            }, "+=0");
+        });
     }
 
     function scrollToSection(sectionId: string) {
-        const section = document.getElementById(sectionId);
-        if (section) {
-            gsap.to(window, {
-                duration: 1,
-                scrollTo: { y: section, offsetY: 0 },
-                ease: 'power2.inOut',
-                onComplete: () => {
-                    closeMenu();
-                    isMenuOpen = false;
-                }
-            });
-        }
+        closeMenu().then(() => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                gsap.to(window, {
+                    duration: 1,
+                    scrollTo: { y: section, offsetY: 0 },
+                    ease: 'power2.inOut',
+                });
+            }
+        });
     }
 
     function morphTo() {
@@ -321,10 +328,6 @@
         /* Remove transition for background and opacity, GSAP will handle */
     }
 
-    .menu-overlay.open {
-        pointer-events: auto;
-        visibility: visible;
-    }
 
     .menu-content {
         text-align: center;

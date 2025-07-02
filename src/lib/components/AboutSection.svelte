@@ -56,7 +56,7 @@
   });
 </script>
 
-<section class="about-section" bind:this={sectionEl}>
+<section class="about-section" bind:this={sectionEl} id="about">
   <div class="about-content">
     <h2 class="about-title" bind:this={titleEl}>About Me</h2>
     <p class="about-text" bind:this={aboutText} style="color:#eaeaea;">

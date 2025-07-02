@@ -59,7 +59,7 @@
   }
 </script>
 
-<section class="contact-section" bind:this={sectionEl}>
+<section class="contact-section" bind:this={sectionEl} id="contact">
   <div class="contact-content">
     <h2 class="contact-title" bind:this={titleEl}>Let's Talk</h2>
     <p class="contact-text" bind:this={contactText} style="color:#eaeaea;">

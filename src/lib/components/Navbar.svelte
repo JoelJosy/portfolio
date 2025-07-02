@@ -1,5 +1,7 @@
 <script lang="ts">
     import { gsap } from 'gsap';
+    import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+    gsap.registerPlugin(ScrollToPlugin);
     
     let navbar: HTMLElement;
     let menuButton: HTMLElement;
@@ -121,10 +123,18 @@
         }, "-=0.2");
     }
 
-    function handleNavClick() {
-        if (isMenuOpen) {
-            closeMenu();
-            isMenuOpen = false;
+    function scrollToSection(sectionId: string) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            gsap.to(window, {
+                duration: 1,
+                scrollTo: { y: section, offsetY: 0 },
+                ease: 'power2.inOut',
+                onComplete: () => {
+                    closeMenu();
+                    isMenuOpen = false;
+                }
+            });
         }
     }
 </script>
@@ -142,25 +152,25 @@
         </button>
     </div>
 
-    <div class="menu-overlay" class:open={isMenuOpen} bind:this={menuOverlay} onclick={handleNavClick} onkeydown={(e) => e.key === 'Escape' && handleNavClick()} role="dialog" aria-label="Navigation menu" tabindex="-1">
+    <div class="menu-overlay" class:open={isMenuOpen} bind:this={menuOverlay} role="dialog" aria-label="Navigation menu" tabindex="-1" onkeydown={(e) => e.key === 'Escape' && (closeMenu(), isMenuOpen = false)}>
         <div class="menu-content" bind:this={menuItems} onclick={(e) => {e.stopPropagation()}} onkeydown={(e) => e.stopPropagation()} role="menu" tabindex="-1">
             <div class="menu-items">
-                <a href="/" class="menu-item" onclick={handleNavClick}>
+                <button type="button" class="menu-item" aria-label="Go to Home section" onclick={() => scrollToSection('home')}>
                     <span class="menu-number">01</span>
                     <span class="menu-text">Home</span>
-                </a>
-                <a href="/projects" class="menu-item" onclick={handleNavClick}>
+                </button>
+                <button type="button" class="menu-item" aria-label="Go to Projects section" onclick={() => scrollToSection('projects')}>
                     <span class="menu-number">02</span>
                     <span class="menu-text">Projects</span>
-                </a>
-                <a href="/about" class="menu-item" onclick={handleNavClick}>
+                </button>
+                <button type="button" class="menu-item" aria-label="Go to About section" onclick={() => scrollToSection('about')}>
                     <span class="menu-number">03</span>
                     <span class="menu-text">About</span>
-                </a>
-                <a href="/contact" class="menu-item" onclick={handleNavClick}>
+                </button>
+                <button type="button" class="menu-item" aria-label="Go to Contact section" onclick={() => scrollToSection('contact')}>
                     <span class="menu-number">04</span>
                     <span class="menu-text">Contact</span>
-                </a>
+                </button>
             </div>
         </div>
     </div>

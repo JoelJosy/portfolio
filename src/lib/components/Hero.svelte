@@ -63,7 +63,7 @@
     });
 </script>
 
-<div class="hero" bind:this={heroContainer}>
+<div class="hero" bind:this={heroContainer} id="home">
     <div class="content-wrapper">
         <div class="name-role-group">
             <div class="name" bind:this={nameElement}>

@@ -213,7 +213,7 @@ $effect(() => {
 });
 </script>
 
-<section class="projects-section">
+<section class="projects-section" id="projects">
   <h2 class="projects-title" bind:this={projectsTitleEl}>Projects</h2>
   <div
     class="projects-list"

@@ -287,8 +287,10 @@ $effect(() => {
   opacity: 0.6;
 }
 .projects-list {
-  width: 100vw;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -296,8 +298,8 @@ $effect(() => {
   border-bottom: 1px solid #e5e5e5;
 }
 .project-row {
-  width: 100vw;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1000px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -380,7 +382,7 @@ $effect(() => {
     margin-bottom: 3rem;
   }
   .projects-list, .project-row {
-    max-width: 98vw;
+    max-width: 90vw;
   }
   .project-row {
     flex-direction: column;
@@ -405,11 +407,14 @@ $effect(() => {
 }
 @media (max-width: 600px) {
   .projects-section {
-    padding: 3.5rem 0 2.5rem 0;
+    padding: 7rem 0 2.5rem 0;
   }
   .projects-title {
     font-size: clamp(2rem, 12vw, 3rem);
     margin-bottom: 2.5rem;
+  }
+  .projects-list, .project-row {
+    max-width: 95vw;
   }
   .project-row {
     padding: 1.2rem 2vw;
@@ -425,5 +430,9 @@ $effect(() => {
   .card-desc {
     font-size: 0.95rem;
   }
+}
+
+:global(html) {
+  scroll-padding-top: 7rem;
 }
 </style> 

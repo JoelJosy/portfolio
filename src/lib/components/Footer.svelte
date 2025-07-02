@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { gsap } from 'gsap';
 
   let currentTime = $state('');
   let footerEl: HTMLElement;

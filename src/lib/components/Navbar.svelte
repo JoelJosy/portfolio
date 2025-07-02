@@ -2,7 +2,6 @@
     import { gsap } from 'gsap';
     import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
     import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
-    import ScrambleText from './ScrambleText.svelte';
     gsap.registerPlugin(ScrollToPlugin);
     gsap.registerPlugin(MorphSVGPlugin);
     
@@ -37,9 +36,8 @@
     });
 
     function toggleMenu() {
-        isMenuOpen = !isMenuOpen;
-        
-        if (isMenuOpen) {
+        if (!isMenuOpen) {
+            isMenuOpen = true;
             openMenu();
         } else {
             closeMenu();
@@ -94,51 +92,39 @@
 
     function closeMenu() {
         const menuItemLinks = menuItems.querySelectorAll('.menu-item');
-        const menuLines = menuButton.querySelectorAll('.menu-line');
         const tl = gsap.timeline();
-        tl.to(menuLines, {
-            scaleX: 0.85,
-            rotation: 0,
-            duration: 0.15,
-            ease: 'power1.in',
-        })
-        .to(menuLines, {
-            scaleX: 1,
-            rotation: 0,
-            duration: 0.15,
-            ease: 'power1.out',
-        })
-        .to(menuItemLinks, {
+        tl.to(menuItemLinks, {
             opacity: 0,
             y: 20,
             color: '#fff',
-            duration: 0.3,
+            duration: 0.28,
             stagger: {
-              each: 0.06,
+              each: 0.05,
               from: "end"
             },
             ease: "power3.in"
-        }, "-=0.2")
+        }, "+=0.03")
         .to(menuItems, {
             opacity: 0,
             y: 20,
-            duration: 0.3,
+            duration: 0.18,
             ease: 'power2.in'
-        }, "<")
+        }, "-=0.12")
         .to(menuOverlay, {
             opacity: 0,
             background: 'rgba(0,0,0,0.0)',
-            duration: 0.4,
+            duration: 0.28,
             ease: 'power2.inOut',
             onComplete: () => {
                 gsap.set(menuOverlay, { visibility: "hidden", pointerEvents: 'none' });
                 gsap.to([menuButton, navBrand], {
                     color: '#1a1a1a',
-                    duration: 0.3,
+                    duration: 0.2,
                     ease: 'power2.inOut'
                 });
+                isMenuOpen = false;
             }
-        }, "-=0.2");
+        }, "+=0");
     }
 
     function scrollToSection(sectionId: string) {
@@ -209,7 +195,7 @@
         </button>
     </div>
 
-    <div class="menu-overlay" class:open={isMenuOpen} bind:this={menuOverlay} role="dialog" aria-label="Navigation menu" tabindex="-1" onkeydown={(e) => e.key === 'Escape' && (closeMenu(), isMenuOpen = false)}>
+    <div class="menu-overlay" bind:this={menuOverlay} role="dialog" aria-label="Navigation menu" tabindex="-1" onkeydown={(e) => e.key === 'Escape' && (closeMenu())}>
         <div class="menu-content" bind:this={menuItems} onclick={(e) => {e.stopPropagation()}} onkeydown={(e) => e.stopPropagation()} role="menu" tabindex="-1">
             <div class="menu-items">
                 <button type="button" class="menu-item" aria-label="Go to Home section" onclick={() => scrollToSection('home')}>

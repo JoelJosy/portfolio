@@ -12,4 +12,11 @@ body {
 	height: 100vh;
 	width: 100vw;
 	font-family: 'inter', sans-serif;
+	overflow: hidden;
+	scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar,
+html::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Opera */
 }

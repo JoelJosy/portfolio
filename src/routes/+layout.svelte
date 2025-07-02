@@ -1,12 +1,12 @@
 <script lang="ts">
 	import '../app.css';
 	import Lenis from 'lenis';
-	import { onMount } from 'svelte';
+	import SquishyCursor from '$lib/components/SquishyCursor.svelte';
 
 	let { children } = $props();
 
 	// Initialize Lenis for smooth scrolling
-	onMount(() => {
+	$effect(() => {
 		const lenis = new Lenis({
 			lerp: 0.1, // Adjust for more/less smoothing
 		});
@@ -22,5 +22,7 @@
 		};
 	});
 </script>
+
+<SquishyCursor />
 
 {@render children()}

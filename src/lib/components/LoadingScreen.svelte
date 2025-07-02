@@ -111,9 +111,7 @@
         font-size: clamp(1.5rem, 3vw, 2rem);
         font-weight: 300;
         color: #ffffff;
-        letter-spacing: 0.1em;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        text-transform: uppercase;
     }
 
     .loading-bar {

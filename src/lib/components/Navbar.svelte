@@ -59,7 +59,7 @@
         tl.set(menuOverlay, { visibility: "visible", pointerEvents: 'auto' })
           .to(menuOverlay, {
             opacity: 1,
-            background: 'rgba(0,0,0,0.95)',
+            background: 'rgba(0,0,0,1)',
             duration: 0.5,
             ease: 'power2.inOut',
             onStart: () => {

@@ -10,38 +10,40 @@ interface Project {
   tech: string;
   description: string;
   link: string;
+  inProgress?: boolean;
 }
 
 const projects: Project[] = [
   {
-    title: 'Project 1',
-    tech: 'Node.js, Express.js',
-    description: 'A RESTful API server built with Node.js and Express.js, providing robust endpoints for a scalable web application.',
-    link: 'https://example.com/project1',
+    title: 'Huddle: AI Powered Study Collaboration Platform',
+    tech: 'Next.js, TypeScript, PostgreSQL, Supabase',
+    description: 'A scalable platform to upload study notes and generate AI-powered summaries, mindmaps, and quizzes — with real-time group chats, secure Supabase Auth, and smart server-side rendering with caching for a fast, seamless experience.',
+    link: 'https://huddle-project-jol.vercel.app/',
   },
   {
-    title: 'Project 2',
-    tech: 'React, TypeScript',
-    description: 'A modern single-page application using React and TypeScript, featuring dynamic UI and state management.',
-    link: 'https://example.com/project2',
+    title: 'MAuth: Magic Link + OTP Auth System',
+    tech: 'Node.js, MongoDB, Redis, JWT (RS256)',
+    description: 'A custom authentication service providing magic link and OTP-based login. Built with Node.js, Express.js, MongoDB, and Redis for caching. Uses JWT with RS256 for secure authentication.',
+    link: 'https://github.com/JoelJosy/MAuth',
   },
   {
-    title: 'Project 3',
-    tech: 'Python, Flask',
-    description: 'A lightweight web app built with Flask, focusing on rapid prototyping and clean RESTful APIs.',
-    link: 'https://example.com/project3',
+    title: 'Real Estate Market',
+    tech: 'Next.js, Express.js, Node.js, PostgreSQL',
+    description: 'Full-stack web application for the Irish real estate market using the PERN stack. Built a REST API to handle CRUD operations, joins, and other database queries for efficient data management. Uses real datasets.',
+    link: 'https://real-est-project.vercel.app/',
   },
   {
-    title: 'Project 4',
-    tech: 'Svelte, Vite',
-    description: 'A blazing fast Svelte app bundled with Vite, demonstrating reactive UI and smooth transitions.',
-    link: 'https://example.com/project4',
+    title: 'Portfolio',
+    tech: 'Svelte, TypeScript, Vite',
+    description: 'Personal portfolio website to showcase projects and skills. Built with Svelte and TypeScript, featuring smooth animations with GSAP and a modern UI.',
+    link: 'https://github.com/JoelJosy/portfolio',
   },
   {
-    title: 'Project 5',
-    tech: 'Next.js, MongoDB',
-    description: 'A full-stack project using Next.js and MongoDB, featuring server-side rendering and a NoSQL database.',
-    link: 'https://example.com/project5',
+    title: 'Credit Card Fraud Detection Model',
+    tech: 'Python, scikit-learn, Pandas',
+    description: 'A machine learning model to detect credit card fraud using real-world datasets. Implements feature engineering, model training, and evaluation.',
+    link: 'https://github.com/JoelJosy',
+    inProgress: true,
   },
 ];
 
@@ -249,6 +251,9 @@ $effect(() => {
         <div class="card-content" bind:this={cardContentEl}>
           <div class="card-title">{projects[hoveredIndex].title}</div>
           <div class="card-desc">{projects[hoveredIndex].description}</div>
+          {#if projects[hoveredIndex].inProgress}
+            <div class="card-status in-progress">In Progress</div>
+          {/if}
         </div>
       {/if}
     </div>
@@ -336,12 +341,12 @@ $effect(() => {
   position: fixed;
   left: 0;
   top: 0;
-  width: 420px;
-  height: 280px;
+  width: 480px;
+  height: 320px;
   background: #000000;
   border-radius: 1.2rem;
   box-shadow: 0 20px 60px 0 rgba(0,0,0,0.25), 0 8px 24px 0 rgba(0,0,0,0.15);
-  padding: 2.5rem;
+  padding: 2.8rem;
   z-index: 1000;
   pointer-events: none;
   display: flex;
@@ -357,7 +362,7 @@ $effect(() => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1.2rem;
 }
 .card-title {
   font-size: 1.8rem;
@@ -375,6 +380,17 @@ $effect(() => {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   letter-spacing: 0.02em;
   margin: 0;
+}
+.card-status.in-progress {
+  margin-top: 0.5rem;
+  font-size: 1.05rem;
+  color: #ffb300;
+  background: rgba(255, 179, 0, 0.12);
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.9rem;
+  font-weight: 500;
+  display: inline-block;
+  letter-spacing: 0.02em;
 }
 @media (max-width: 900px) {
   .projects-title {
@@ -394,9 +410,9 @@ $effect(() => {
     text-align: left;
   }
   .project-card {
-    width: 360px;
-    height: 240px;
-    padding: 2rem;
+    width: 400px;
+    height: 260px;
+    padding: 2.2rem;
   }
   .card-title {
     font-size: 1.5rem;
@@ -420,8 +436,8 @@ $effect(() => {
     padding: 1.2rem 2vw;
   }
   .project-card {
-    width: 300px;
-    height: 200px;
+    width: 320px;
+    height: 210px;
     padding: 1.5rem;
   }
   .card-title {

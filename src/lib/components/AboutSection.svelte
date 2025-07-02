@@ -1,58 +1,60 @@
 <script lang="ts">
   import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import SplitType from 'split-type';
-
-  gsap.registerPlugin(ScrollTrigger);
 
   let aboutText: HTMLElement;
   let sectionEl: HTMLElement;
   let titleEl: HTMLElement;
 
   $effect(() => {
-    if (!aboutText || !titleEl) return;
-    
-    // Animate title on scroll
-    gsap.fromTo(
-      titleEl,
-      { y: 60, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionEl,
-          start: 'top 50%',
-          end: 'bottom 100%',
-          scrub: false,
-          markers: false,
-          toggleActions: 'play none none reverse'
-        }
-      }
-    );
+    (async () => {
+      const pkg = await import('gsap/ScrollTrigger');
+      const { ScrollTrigger } = pkg;
+      gsap.registerPlugin(ScrollTrigger);
 
-
-    const split = new SplitType(aboutText, { types: 'words' });
-    gsap.fromTo(
-      split.words,
-      { color: '#eaeaea', y: 20 },
-      {
-        color: '#1a1a1a',
-        y: 0,
-        stagger: 0.03,
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: sectionEl,
-          start: 'top 40%',
-          end: 'bottom 100%',
-          scrub: true,
-          markers: false,
-          toggleActions: 'play play reverse reverse'
+      if (!aboutText || !titleEl) return;
+      
+      // Animate title on scroll
+      gsap.fromTo(
+        titleEl,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionEl,
+            start: 'top 50%',
+            end: 'bottom 100%',
+            scrub: false,
+            markers: false,
+            toggleActions: 'play none none reverse'
+          }
         }
-      }
-    );
+      );
+
+      const split = new SplitType(aboutText, { types: 'words' });
+      gsap.fromTo(
+        split.words,
+        { color: '#eaeaea', y: 20 },
+        {
+          color: '#1a1a1a',
+          y: 0,
+          stagger: 0.03,
+          duration: 1.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionEl,
+            start: 'top 40%',
+            end: 'bottom 100%',
+            scrub: true,
+            markers: false,
+            toggleActions: 'play play reverse reverse'
+          }
+        }
+      );
+    })();
   });
 </script>
 

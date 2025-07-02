@@ -23,4 +23,4 @@
 <ContactSection />
 <Footer />
 
-<!-- <LoadingScreen onComplete={handleLoadingComplete} /> -->
+<LoadingScreen onComplete={handleLoadingComplete} />

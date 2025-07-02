@@ -1,9 +1,6 @@
 <script lang="ts">
   import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import SplitType from 'split-type';
-
-  gsap.registerPlugin(ScrollTrigger);
 
   let line0: HTMLElement;
   let line1: HTMLElement;
@@ -17,35 +14,41 @@
   ];
 
   $effect(() => {
-    const lineRefs = [line0, line1, line2];
-    const splitLines = lineRefs.map((el) => new SplitType(el, { types: 'chars' }));
+    (async () => {
+      const pkg = await import('gsap/ScrollTrigger');
+      const { ScrollTrigger } = pkg;
+      gsap.registerPlugin(ScrollTrigger);
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionEl,
-        start: 'top 40%',
-        end: 'bottom 100%',
-        scrub: true,
-        markers: false,
-        toggleActions: 'play play reverse reverse'
-      }
-    });
+      const lineRefs = [line0, line1, line2];
+      const splitLines = lineRefs.map((el) => new SplitType(el, { types: 'chars' }));
 
-    const lineCount = splitLines.length;
-    splitLines.forEach((split, i) => {
-      tl.fromTo(
-        split.chars,
-        { color: '#eaeaea', y: 20 },
-        {
-          color: '#1a1a1a',
-          y: 0,
-          stagger: 0.03,
-          duration: 1.5,
-          ease: "power2.out"
-        },
-        `${(i * 100) / lineCount}%` 
-      );
-    });
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionEl,
+          start: 'top 40%',
+          end: 'bottom 100%',
+          scrub: true,
+          markers: false,
+          toggleActions: 'play play reverse reverse'
+        }
+      });
+
+      const lineCount = splitLines.length;
+      splitLines.forEach((split, i) => {
+        tl.fromTo(
+          split.chars,
+          { color: '#eaeaea', y: 20 },
+          {
+            color: '#1a1a1a',
+            y: 0,
+            stagger: 0.03,
+            duration: 1.5,
+            ease: "power2.out"
+          },
+          `${(i * 100) / lineCount}%` 
+        );
+      });
+    })();
   });
 </script>
 

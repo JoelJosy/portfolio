@@ -1,57 +1,61 @@
 <script lang="ts">
   import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import SplitType from 'split-type';
-  gsap.registerPlugin(ScrollTrigger);
 
   let contactText: HTMLElement;
   let sectionEl: HTMLElement;
   let titleEl: HTMLElement;
 
   $effect(() => {
-    if (!contactText || !titleEl) return;
-    
-    // Animate title on scroll
-    gsap.fromTo(
-      titleEl,
-      { y: 60, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionEl,
-          start: 'top 70%',
-          end: 'top 20%',
-          scrub: false,
-          markers: false,
-          toggleActions: 'play none none reverse'
-        }
-      }
-    );
+    (async () => {
+      const pkg = await import('gsap/ScrollTrigger');
+      const { ScrollTrigger } = pkg;
+      gsap.registerPlugin(ScrollTrigger);
 
-    // Animate text with character reveal
-    const split = new SplitType(contactText, { types: 'chars' });
-    gsap.fromTo(
-      split.chars,
-      { color: '#eaeaea', y: 20 },
-      {
-        color: '#1a1a1a',
-        y: 0,
-        stagger: 0.03,
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: sectionEl,
-          start: 'top 60%',
-          end: 'bottom 100%',
-          scrub: true,
-          markers: false,
-          toggleActions: 'play play reverse reverse'
+      if (!contactText || !titleEl) return;
+      
+      // Animate title on scroll
+      gsap.fromTo(
+        titleEl,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionEl,
+            start: 'top 70%',
+            end: 'top 20%',
+            scrub: false,
+            markers: false,
+            toggleActions: 'play none none reverse'
+          }
         }
-      }
-    );
+      );
+
+      // Animate text with character reveal
+      const split = new SplitType(contactText, { types: 'chars' });
+      gsap.fromTo(
+        split.chars,
+        { color: '#eaeaea', y: 20 },
+        {
+          color: '#1a1a1a',
+          y: 0,
+          stagger: 0.03,
+          duration: 1.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionEl,
+            start: 'top 60%',
+            end: 'bottom 100%',
+            scrub: true,
+            markers: false,
+            toggleActions: 'play play reverse reverse'
+          }
+        }
+      );
+    })();
   });
 
   function handleEmailClick() {

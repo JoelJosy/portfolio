@@ -1,9 +1,6 @@
 <script lang="ts">
 import { tick } from 'svelte';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface Project {
   title: string;
@@ -67,49 +64,54 @@ let isExiting = $state(false);
 let isAnimating = $state(false);
 
 $effect(() => {
-  if (!projectsTitleEl || !projectsListEl) return;
-  
-  // Animate title on scroll
-  gsap.fromTo(
-    projectsTitleEl,
-    { y: 60, opacity: 0 },
-    {
-      y: 0,
-      opacity: 1,
-      duration: 1.2,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: projectsListEl,
-        start: 'top 80%',
-        end: 'top 20%',
-        scrub: false,
-        markers: false,
-        toggleActions: 'play none none reverse'
-      }
-    }
-  );
+  (async () => {
+    const pkg = await import('gsap/ScrollTrigger');
+    const { ScrollTrigger } = pkg;
+    gsap.registerPlugin(ScrollTrigger);
 
-  // Animate project rows with stagger
-  const projectRows = projectsListEl.querySelectorAll('.project-row');
-  gsap.fromTo(
-    projectRows,
-    { y: 40, opacity: 0 },
-    {
-      y: 0,
-      opacity: 1,
-      stagger: 0.15,
-      duration: 1.0,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: projectsListEl,
-        start: 'top 70%',
-        end: 'bottom 100%',
-        scrub: false,
-        markers: false,
-        toggleActions: 'play none none reverse'
+    if (!projectsTitleEl || !projectsListEl) return;
+    // Animate title on scroll
+    gsap.fromTo(
+      projectsTitleEl,
+      { y: 60, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.2,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: projectsListEl,
+          start: 'top 80%',
+          end: 'top 20%',
+          scrub: false,
+          markers: false,
+          toggleActions: 'play none none reverse'
+        }
       }
-    }
-  );
+    );
+
+    // Animate project rows with stagger
+    const projectRows = projectsListEl.querySelectorAll('.project-row');
+    gsap.fromTo(
+      projectRows,
+      { y: 40, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        stagger: 0.15,
+        duration: 1.0,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: projectsListEl,
+          start: 'top 70%',
+          end: 'bottom 100%',
+          scrub: false,
+          markers: false,
+          toggleActions: 'play none none reverse'
+        }
+      }
+    );
+  })();
 });
 
 function handleRowClick(idx: number) {

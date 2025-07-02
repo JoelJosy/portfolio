@@ -1,17 +1,6 @@
 <script lang="ts">
     import { gsap } from 'gsap';
-    import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
-    gsap.registerPlugin(ScrollToPlugin);
-
-    $effect(() => {
-        (async () => {
-            const pkg = await import('gsap/MorphSVGPlugin');
-            const { MorphSVGPlugin } = pkg;
-            gsap.registerPlugin(MorphSVGPlugin);
-        })();
-    });
-    
     let navbar: HTMLElement;
     let menuButton: HTMLElement;
     let menuOverlay: HTMLElement;
@@ -27,6 +16,18 @@
     const pathEnd = "M8 14C9.125 18 15.875 18 17 14M1 13L7 7L1 1M24 13L18 7L24 1";
     const hamburgerPath = "M1 7H17M1 13H17M1 1H17";
     const xPath = "M13 1L1 13M1 1L13 13";
+
+    $effect(() => {
+        (async () => {
+            const scrollToPkg = await import('gsap/ScrollToPlugin');
+            const { ScrollToPlugin } = scrollToPkg;
+            gsap.registerPlugin(ScrollToPlugin);
+
+            const morphPkg = await import('gsap/MorphSVGPlugin');
+            const { MorphSVGPlugin } = morphPkg;
+            gsap.registerPlugin(MorphSVGPlugin);
+        })();
+    });
 
     $effect(() => {
         // Set initial states

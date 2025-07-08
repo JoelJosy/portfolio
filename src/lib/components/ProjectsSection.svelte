@@ -18,9 +18,9 @@ const projects: Project[] = [
     link: 'https://huddle-project-jol.vercel.app/',
   },
   {
-    title: 'MAuth: Magic Link + OTP Auth System',
+    title: 'MAuth: Passwordless Authentication System',
     tech: 'Node.js, MongoDB, Redis, JWT (RS256)',
-    description: 'A custom authentication service providing magic link and OTP-based login. Built with Node.js, Express.js, MongoDB, and Redis for caching. Uses JWT with RS256 for secure authentication.',
+    description: 'A secure authentication service with magic link and OTP login, per-client key encryption, and JWT (RS256) support. Includes Redis-powered rate limiting, token rotation, secure cookie auth, and JWKS endpoint for public key distribution.',
     link: 'https://github.com/JoelJosy/MAuth',
   },
   {
